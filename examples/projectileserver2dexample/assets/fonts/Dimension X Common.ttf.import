@@ -1,0 +1,34 @@
+[remap]
+
+importer="font_data_dynamic"
+type="FontFile"
+uid="uid://ca1aopl2c6ekp"
+path="res://.godot/imported/Dimension X Common.ttf-c99b3dd584803e6206a3a6ed5499751c.fontdata"
+
+[deps]
+
+source_file="res://assets/fonts/Dimension X Common.ttf"
+dest_files=["res://.godot/imported/Dimension X Common.ttf-c99b3dd584803e6206a3a6ed5499751c.fontdata"]
+
+[params]
+
+Rendering=null
+antialiasing=1
+generate_mipmaps=false
+disable_embedded_bitmaps=true
+multichannel_signed_distance_field=false
+msdf_pixel_range=8
+msdf_size=48
+allow_system_fallback=true
+force_autohinter=false
+hinting=1
+subpixel_positioning=1
+oversampling=0.0
+Fallbacks=null
+fallbacks=[]
+Compress=null
+compress=true
+preload=[]
+language_support={}
+script_support={}
+opentype_features={}

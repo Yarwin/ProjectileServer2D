@@ -1,0 +1,236 @@
+[gd_scene load_steps=29 format=4 uid="uid://diloxoqlnj70s"]
+
+[ext_resource type="Script" path="res://src/example_display/example_caster.gd" id="1_sia07"]
+[ext_resource type="Texture2D" uid="uid://8jgbh1hk70t5" path="res://assets/32_brown_2.bmp" id="2_hl0aq"]
+[ext_resource type="Texture2D" uid="uid://rh3cr3h3qhbl" path="res://icon.svg" id="2_rudhm"]
+[ext_resource type="ProjectileConfig" uid="uid://ggcm1vwuxqyx" path="res://src/example_display/projectile_configs/user_extended_projectile_config_rect.tres" id="4_lceqi"]
+[ext_resource type="ProjectileConfig" uid="uid://bp6qgc4ji7b8p" path="res://src/example_display/projectile_configs/user_extended_projectile_curved.tres" id="5_5cijy"]
+[ext_resource type="Script" path="res://src/example_display/projectile_configs/draw_damage_on_target_projectile_config.gd" id="5_l255j"]
+[ext_resource type="Texture2D" uid="uid://k8vcwto7csdu" path="res://assets/Hooded_protagonist.png" id="5_rjvwo"]
+[ext_resource type="ProjectileConfig" uid="uid://doqr5432xbdil" path="res://src/example_display/projectile_configs/user_extended_sinusoid_projectile.tres" id="6_lwhvc"]
+[ext_resource type="Shader" path="res://src/example_display/projectile_rect_material.gdshader" id="7_3pug0"]
+[ext_resource type="Texture2D" uid="uid://bxwkinnqfeuca" path="res://assets/32_grey_3.bmp" id="7_ky4pv"]
+[ext_resource type="Script" path="res://src/example_display/example_target.gd" id="8_sjl2t"]
+
+[sub_resource type="TileMapPattern" id="TileMapPattern_xmeqr"]
+tile_data = PackedInt32Array(0, 1, 0, 65536, 0, 0, 1, 0, 0, 65537, 1, 0)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_neud7"]
+texture = ExtResource("7_ky4pv")
+texture_region_size = Vector2i(32, 32)
+use_texture_padding = false
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j2eh8"]
+texture = ExtResource("2_hl0aq")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_tnthg"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_neud7")
+sources/1 = SubResource("TileSetAtlasSource_j2eh8")
+pattern_0 = SubResource("TileMapPattern_xmeqr")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_t5rl4"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_i7nct"]
+noise = SubResource("FastNoiseLite_t5rl4")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vdopl"]
+shader = ExtResource("7_3pug0")
+shader_parameter/gradientRemap = Vector4(0.328, -0.958, 0, 0.264)
+shader_parameter/beamRemap = Vector4(0.404, 1.12, 1, 200)
+shader_parameter/color1 = Color(0, 0, 0, 0)
+shader_parameter/color2 = Color(1, 0, 0, 1)
+shader_parameter/scale = Vector3(1, 20, 0)
+shader_parameter/threshold = 0.773
+shader_parameter/offset = 1.5
+shader_parameter/noise = SubResource("NoiseTexture2D_i7nct")
+
+[sub_resource type="ProjectileRectDisplay" id="ProjectileRectDisplay_qwx2l"]
+width = 16.0
+height = 16.0
+material = SubResource("ShaderMaterial_vdopl")
+
+[sub_resource type="SinusoidTrajectoryConfig" id="SinusoidTrajectoryConfig_rl0la"]
+modulator = 5.0
+offset = 3.142
+
+[sub_resource type="ProjectileConfig" id="ProjectileConfig_x5yir"]
+speed = 110.0
+max_speed = 600.0
+acceleration = 50.0
+lifetime = 6.0
+trajectory_type = 1
+collision_mask = 1
+collide_with_bodies = true
+collide_with_areas = true
+display_type = 1
+rect_display = SubResource("ProjectileRectDisplay_qwx2l")
+sinusoid_trajectory_config = SubResource("SinusoidTrajectoryConfig_rl0la")
+script = ExtResource("5_l255j")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1g0qo"]
+atlas = ExtResource("5_rjvwo")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fa7dx"]
+atlas = ExtResource("5_rjvwo")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1rgqk"]
+atlas = ExtResource("5_rjvwo")
+region = Rect2(0, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_egt3b"]
+atlas = ExtResource("5_rjvwo")
+region = Rect2(32, 32, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_whae2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1g0qo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fa7dx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1rgqk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_egt3b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1rgqk")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 4.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bkjiv"]
+radius = 8.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ivwox"]
+radius = 9.0
+
+[node name="ExampleDisplay" type="Node2D"]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+z_index = -2
+position = Vector2(15, -15)
+tile_map_data = PackedByteArray("AAD6//3/AQAAAAAAAAD6//7/AAAAAAAAAAD6////AQAAAAAAAAD6/wAAAAAAAAAAAAD6/wEAAQAAAAAAAAD6/wIAAAAAAAAAAAD6/wMAAQAAAAAAAAAFAP3/AAAAAAAAAAAFAP7/AAAAAAAAAAAFAP//AAAAAAAAAAAFAAAAAAAAAAAAAAAFAAEAAAAAAAAAAAAFAAIAAAAAAAAAAAAFAAMAAAAAAAAAAAD5//z/AAAAAAAAAAD6//z/AAAAAAAAAAAFAAQAAAAAAAAAAAD5//3/AAAAAAAAAAD5//7/AAAAAAAAAAD5////AAAAAAAAAAD5/wAAAAAAAAAAAAD5/wEAAAAAAAAAAAD5/wIAAAAAAAAAAAD5/wMAAAAAAAAAAAD5/wQAAAAAAAAAAAD6/wQAAAAAAAAAAAD7//z/AAAAAAAAAAD7/wQAAAAAAAAAAAD8//z/AAAAAAAAAAD8/wQAAAAAAAAAAAD9//z/AAAAAAAAAAD9/wQAAAAAAAAAAAD+//z/AAAAAAAAAAD+/wQAAAAAAAAAAAD///z/AAAAAAAAAAD//wQAAAAAAAAAAAAAAPz/AAAAAAAAAAAAAAQAAAAAAAAAAAABAPz/AAAAAAAAAAABAAQAAAAAAAAAAAACAPz/AAAAAAAAAAACAAQAAAAAAAAAAAADAPz/AAAAAAAAAAADAAQAAAAAAAAAAAAEAPz/AAAAAAAAAAAEAAQAAAAAAAAAAAAFAPz/AAAAAAAAAAAGAPz/AAAAAAAAAAAGAP3/AQAAAAAAAAAGAP7/AAAAAAAAAAAGAP//AQAAAAAAAAAGAAAAAAAAAAAAAAAGAAEAAQAAAAAAAAAGAAIAAAAAAAAAAAAGAAMAAQAAAAAAAAAGAAQAAAAAAAAAAAD7//3/AAAAAAAAAAD7//7/AAAAAAAAAAD7////AAAAAAAAAAD7/wAAAAAAAAAAAAD7/wEAAAAAAAAAAAD7/wIAAAAAAAAAAAD7/wMAAAAAAAAAAAD8//3/AQAAAAAAAAD8//7/AAAAAAAAAAD8////AQAAAAAAAAD8/wAAAAAAAAAAAAD8/wEAAQAAAAAAAAD8/wIAAAAAAAAAAAD8/wMAAQAAAAAAAAD9//3/AAAAAAAAAAD9//7/AAAAAAAAAAD9////AAAAAAAAAAD9/wAAAAAAAAAAAAD9/wEAAAAAAAAAAAD9/wIAAAAAAAAAAAD9/wMAAAAAAAAAAAD+//3/AQAAAAAAAAD+//7/AAAAAAAAAAD+////AQAAAAAAAAD+/wAAAAAAAAAAAAD+/wEAAQAAAAAAAAD+/wIAAAAAAAAAAAD+/wMAAQAAAAAAAAD///3/AAAAAAAAAAD///7/AAAAAAAAAAD//wAAAAAAAAAAAAD//wEAAAAAAAAAAAD//wIAAAAAAAAAAAD//wMAAAAAAAAAAAAAAP3/AQAAAAAAAAAAAP7/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAQAAAAAAAAAAAAIAAAAAAAAAAAAAAAMAAQAAAAAAAAABAP3/AAAAAAAAAAABAP7/AAAAAAAAAAABAP//AAAAAAAAAAABAAAAAAAAAAAAAAABAAEAAAAAAAAAAAABAAIAAAAAAAAAAAABAAMAAAAAAAAAAAACAP3/AQAAAAAAAAACAP7/AAAAAAAAAAACAP//AQAAAAAAAAACAAAAAAAAAAAAAAACAAEAAQAAAAAAAAACAAIAAAAAAAAAAAACAAMAAQAAAAAAAAADAP3/AAAAAAAAAAADAP7/AAAAAAAAAAADAP//AAAAAAAAAAADAAAAAAAAAAAAAAADAAEAAAAAAAAAAAADAAIAAAAAAAAAAAADAAMAAAAAAAAAAAAEAP3/AQAAAAAAAAAEAP7/AAAAAAAAAAAEAP//AQAAAAAAAAAEAAAAAAAAAAAAAAAEAAEAAQAAAAAAAAAEAAIAAAAAAAAAAAAEAAMAAQAAAAAAAAAAAP//AQAAAAAAAAD/////AAAAAAAAAAD1//n/AAAAAAAAAAD1//r/AAAAAAAAAAD2//n/AQAAAAAAAAD2//r/AAAAAAAAAAD1//v/AAAAAAAAAAD1//z/AAAAAAAAAAD2//v/AQAAAAAAAAD2//z/AAAAAAAAAAD1//3/AAAAAAAAAAD1//7/AAAAAAAAAAD2//3/AQAAAAAAAAD2//7/AAAAAAAAAAD1////AAAAAAAAAAD1/wAAAAAAAAAAAAD2////AQAAAAAAAAD2/wAAAAAAAAAAAAD1/wEAAAAAAAAAAAD1/wIAAAAAAAAAAAD2/wEAAQAAAAAAAAD2/wIAAAAAAAAAAAD1/wMAAAAAAAAAAAD1/wQAAAAAAAAAAAD2/wMAAQAAAAAAAAD2/wQAAAAAAAAAAAD1/wUAAAAAAAAAAAD1/wYAAAAAAAAAAAD2/wUAAQAAAAAAAAD2/wYAAAAAAAAAAAD1/wcAAAAAAAAAAAD2/wcAAQAAAAAAAAD3//n/AAAAAAAAAAD3//r/AAAAAAAAAAD4//n/AQAAAAAAAAD4//r/AAAAAAAAAAD3//v/AAAAAAAAAAD3//z/AAAAAAAAAAD4//v/AQAAAAAAAAD4//z/AAAAAAAAAAD3//3/AAAAAAAAAAD3//7/AAAAAAAAAAD4//3/AQAAAAAAAAD4//7/AAAAAAAAAAD3////AAAAAAAAAAD3/wAAAAAAAAAAAAD4////AQAAAAAAAAD4/wAAAAAAAAAAAAD3/wEAAAAAAAAAAAD3/wIAAAAAAAAAAAD4/wEAAQAAAAAAAAD4/wIAAAAAAAAAAAD3/wMAAAAAAAAAAAD3/wQAAAAAAAAAAAD4/wMAAQAAAAAAAAD4/wQAAAAAAAAAAAD3/wUAAAAAAAAAAAD3/wYAAAAAAAAAAAD4/wUAAQAAAAAAAAD4/wYAAAAAAAAAAAD3/wcAAAAAAAAAAAD4/wcAAQAAAAAAAAD5//n/AAAAAAAAAAD5//r/AAAAAAAAAAD6//n/AQAAAAAAAAD6//r/AAAAAAAAAAD5//v/AAAAAAAAAAD6//v/AQAAAAAAAAD5/wUAAAAAAAAAAAD5/wYAAAAAAAAAAAD6/wUAAQAAAAAAAAD6/wYAAAAAAAAAAAD5/wcAAAAAAAAAAAD6/wcAAQAAAAAAAAD7//n/AAAAAAAAAAD7//r/AAAAAAAAAAD8//n/AQAAAAAAAAD8//r/AAAAAAAAAAD7//v/AAAAAAAAAAD8//v/AQAAAAAAAAD7/wUAAAAAAAAAAAD7/wYAAAAAAAAAAAD8/wUAAQAAAAAAAAD8/wYAAAAAAAAAAAD7/wcAAAAAAAAAAAD8/wcAAQAAAAAAAAD9//n/AAAAAAAAAAD9//r/AAAAAAAAAAD+//n/AQAAAAAAAAD+//r/AAAAAAAAAAD9//v/AAAAAAAAAAD+//v/AQAAAAAAAAD9/wUAAAAAAAAAAAD9/wYAAAAAAAAAAAD+/wUAAQAAAAAAAAD+/wYAAAAAAAAAAAD9/wcAAAAAAAAAAAD+/wcAAQAAAAAAAAD///n/AAAAAAAAAAD///r/AAAAAAAAAAAAAPn/AQAAAAAAAAAAAPr/AAAAAAAAAAD///v/AAAAAAAAAAAAAPv/AQAAAAAAAAD//wUAAAAAAAAAAAD//wYAAAAAAAAAAAAAAAUAAQAAAAAAAAAAAAYAAAAAAAAAAAD//wcAAAAAAAAAAAAAAAcAAQAAAAAAAAABAPn/AAAAAAAAAAABAPr/AAAAAAAAAAACAPn/AQAAAAAAAAACAPr/AAAAAAAAAAABAPv/AAAAAAAAAAACAPv/AQAAAAAAAAABAAUAAAAAAAAAAAABAAYAAAAAAAAAAAACAAUAAQAAAAAAAAACAAYAAAAAAAAAAAABAAcAAAAAAAAAAAACAAcAAQAAAAAAAAADAPn/AAAAAAAAAAADAPr/AAAAAAAAAAAEAPn/AQAAAAAAAAAEAPr/AAAAAAAAAAADAPv/AAAAAAAAAAAEAPv/AQAAAAAAAAADAAUAAAAAAAAAAAADAAYAAAAAAAAAAAAEAAUAAQAAAAAAAAAEAAYAAAAAAAAAAAADAAcAAAAAAAAAAAAEAAcAAQAAAAAAAAAFAPn/AAAAAAAAAAAFAPr/AAAAAAAAAAAGAPn/AQAAAAAAAAAGAPr/AAAAAAAAAAAFAPv/AAAAAAAAAAAGAPv/AQAAAAAAAAAFAAUAAAAAAAAAAAAFAAYAAAAAAAAAAAAGAAUAAQAAAAAAAAAGAAYAAAAAAAAAAAAFAAcAAAAAAAAAAAAGAAcAAQAAAAAAAAAHAPn/AAAAAAAAAAAHAPr/AAAAAAAAAAAIAPn/AQAAAAAAAAAIAPr/AAAAAAAAAAAHAPv/AAAAAAAAAAAHAPz/AAAAAAAAAAAIAPv/AQAAAAAAAAAIAPz/AAAAAAAAAAAHAP3/AAAAAAAAAAAHAP7/AAAAAAAAAAAIAP3/AQAAAAAAAAAIAP7/AAAAAAAAAAAHAP//AAAAAAAAAAAHAAAAAAAAAAAAAAAIAP//AQAAAAAAAAAIAAAAAAAAAAAAAAAHAAEAAAAAAAAAAAAHAAIAAAAAAAAAAAAIAAEAAQAAAAAAAAAIAAIAAAAAAAAAAAAHAAMAAAAAAAAAAAAHAAQAAAAAAAAAAAAIAAMAAQAAAAAAAAAIAAQAAAAAAAAAAAAHAAUAAAAAAAAAAAAHAAYAAAAAAAAAAAAIAAUAAQAAAAAAAAAIAAYAAAAAAAAAAAAHAAcAAAAAAAAAAAAIAAcAAQAAAAAAAAAJAPn/AAAAAAAAAAAJAPr/AAAAAAAAAAAKAPn/AQAAAAAAAAAKAPr/AAAAAAAAAAAJAPv/AAAAAAAAAAAJAPz/AAAAAAAAAAAKAPv/AQAAAAAAAAAKAPz/AAAAAAAAAAAJAP3/AAAAAAAAAAAJAP7/AAAAAAAAAAAKAP3/AQAAAAAAAAAKAP7/AAAAAAAAAAAJAP//AAAAAAAAAAAJAAAAAAAAAAAAAAAKAP//AQAAAAAAAAAKAAAAAAAAAAAAAAAJAAEAAAAAAAAAAAAJAAIAAAAAAAAAAAAKAAEAAQAAAAAAAAAKAAIAAAAAAAAAAAAJAAMAAAAAAAAAAAAJAAQAAAAAAAAAAAAKAAMAAQAAAAAAAAAKAAQAAAAAAAAAAAAJAAUAAAAAAAAAAAAJAAYAAAAAAAAAAAAKAAUAAQAAAAAAAAAKAAYAAAAAAAAAAAAJAAcAAAAAAAAAAAAKAAcAAQAAAAAAAAA=")
+tile_set = SubResource("TileSet_tnthg")
+collision_enabled = false
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, 8)
+zoom = Vector2(4, 4)
+process_callback = 0
+
+[node name="Caster" type="CharacterBody2D" parent="."]
+script = ExtResource("1_sia07")
+projectile_config_rect = ExtResource("4_lceqi")
+projectile_config_texture = ExtResource("5_5cijy")
+projectile_config_sinusoid = ExtResource("6_lwhvc")
+projectile_config_cosinoid = SubResource("ProjectileConfig_x5yir")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="Caster"]
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_whae2")
+animation = &"Idle"
+autoplay = "Idle"
+frame_progress = 0.870771
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Caster"]
+shape = SubResource("CircleShape2D_bkjiv")
+
+[node name="RotationNode" type="Node2D" parent="Caster"]
+unique_name_in_owner = true
+
+[node name="Muzzle" type="Marker2D" parent="Caster/RotationNode"]
+unique_name_in_owner = true
+
+[node name="CurvedMuzzle" type="Marker2D" parent="Caster/RotationNode"]
+unique_name_in_owner = true
+position = Vector2(40, 0)
+
+[node name="TargetArea" type="Area2D" parent="."]
+position = Vector2(94, -62)
+collision_mask = 0
+script = ExtResource("8_sjl2t")
+
+[node name="Sprite2D" type="Sprite2D" parent="TargetArea"]
+modulate = Color(1, 0.0619793, 0.0918265, 1)
+scale = Vector2(0.125, 0.125)
+texture = ExtResource("2_rudhm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TargetArea"]
+shape = SubResource("CircleShape2D_ivwox")
+
+[node name="TargetArea2" type="Area2D" parent="."]
+position = Vector2(-94, -62)
+collision_mask = 0
+script = ExtResource("8_sjl2t")
+
+[node name="Sprite2D" type="Sprite2D" parent="TargetArea2"]
+modulate = Color(1, 0.0619793, 0.0918265, 1)
+scale = Vector2(0.125, 0.125)
+texture = ExtResource("2_rudhm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TargetArea2"]
+shape = SubResource("CircleShape2D_ivwox")
+
+[node name="TargetArea3" type="Area2D" parent="."]
+position = Vector2(-128, 0)
+collision_mask = 0
+script = ExtResource("8_sjl2t")
+
+[node name="Sprite2D" type="Sprite2D" parent="TargetArea3"]
+modulate = Color(1, 0.0619793, 0.0918265, 1)
+scale = Vector2(0.125, 0.125)
+texture = ExtResource("2_rudhm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TargetArea3"]
+shape = SubResource("CircleShape2D_ivwox")
+
+[node name="TargetArea4" type="Area2D" parent="."]
+position = Vector2(128, 0)
+collision_mask = 0
+script = ExtResource("8_sjl2t")
+
+[node name="Sprite2D" type="Sprite2D" parent="TargetArea4"]
+modulate = Color(1, 0.0619793, 0.0918265, 1)
+scale = Vector2(0.125, 0.125)
+texture = ExtResource("2_rudhm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TargetArea4"]
+shape = SubResource("CircleShape2D_ivwox")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+grow_vertical = 0
+
+[node name="DisplayRectButton" type="Button" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Display Rect Example"
+
+[node name="DisplayCurvedButton" type="Button" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Display Curved Texture Example"
+
+[node name="DisplaySineButton" type="Button" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Display Sine Example"
+
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/DisplayRectButton" to="Caster" method="_on_display_rect_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/DisplayCurvedButton" to="Caster" method="_on_display_curved_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/DisplaySineButton" to="Caster" method="_on_display_sine_button_pressed"]

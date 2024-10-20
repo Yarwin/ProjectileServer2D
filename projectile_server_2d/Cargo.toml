@@ -1,0 +1,10 @@
+[package]
+name = "projectile_server_2d"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+godot = { git = "https://github.com/godot-rust/gdext", branch = "master", features = ["register-docs", "experimental-godot-api", "experimental-threads"] }

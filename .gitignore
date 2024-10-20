@@ -1,0 +1,19 @@
+/target
+
+# Binaries
+*.os
+*.o
+*.dblite
+*.pdb
+*.so
+
+# System/tool-specific ignores
+.directory
+.DS_Store
+.vscode
+*~
+
+*.code-workspace
+build_rs_cov.profraw
+lcov.info
+/projectile_server_2d/target/

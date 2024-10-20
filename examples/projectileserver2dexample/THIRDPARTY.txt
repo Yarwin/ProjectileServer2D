@@ -1,0 +1,7 @@
+explosion.png, projectile.png 
+
+Hooded protagonist by Penzilla (https://penzilla.itch.io/hooded-protagonist)
+
+Quake prototype textures (https://www.slipseer.com/index.php?resources/prototype-wad.263/)
+
+Dimension X Common by Tim! (https://github.com/RhapsodyInGeek)

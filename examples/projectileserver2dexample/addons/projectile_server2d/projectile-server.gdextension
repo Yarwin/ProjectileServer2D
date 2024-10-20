@@ -1,0 +1,37 @@
+[configuration]
+
+entry_symbol = "gdext_rust_init"
+compatibility_minimum = "4.3"
+
+
+[libraries]
+windows.release.single.x86_64 = "bin/windows/projectile_server_2d_windows-x64.dll"
+windows.debug.single.x86_64 = "windows/projectile_server_2d_windows-x64_editor.dll"
+
+windows.release.single.x86_32 = "bin/windows/projectile_server_2d_windows-x86.dll"
+windows.debug.single.x86_32 = "bin/windows/projectile_server_2d_windows-x86_editor.dll"
+
+linux.release.single.x86_64 = "bin/linux/libprojectile_server_2d_linux-x64.so"
+# linux.debug.single.x86_64 = "bin/linux/libprojectile_server_2d_linux-x64_editor.so"
+linux.debug.single.x86_64 = "bin/linux/libprojectile_server_2d.so"
+
+linux.release.single.x86_32 = "bin/linux/projectile_server_2d_linux-x86.so"
+linux.debug.single.x86_32 = "bin/linux/projectile_server_2d_linux-x86_editor.so"
+
+macos.release.single = "bin/macos/projectile_server_2d_macos.framework"
+macos.debug.single = "bin/macos/projectile_server_2d_macos_editor.framework"
+
+ios.release.single = "bin/ios/projectile_server_2d_ios.framework"
+ios.debug.single = "bin/ios/projectile_server_2d_ios_editor.framework"
+
+android.release.single.arm64 = "bin/android/libprojectile_server_2d_android-arm64.so"
+android.debug.single.arm64 = "bin/android/libprojectile_server_2d_android-arm64_editor.so"
+
+android.release.single.arm32 = "bin/android/libprojectile_server_2d_android-arm32.so"
+android.debug.single.arm32 = "bin/android/libprojectile_server_2d_android-arm32_editor.so"
+
+android.release.single.x86_64 = "bin/android/libprojectile_server_2d_android-x64.so"
+android.debug.single.x86_64 = "bin/android/libprojectile_server_2d_android-x64_editor.so"
+
+android.release.single.x86_32 = "bin/android/libprojectile_server_2d_android-x86.so"
+android.debug.single.x86_32 = "bin/android/libprojectile_server_2d_android-x86_editor.so"

@@ -1,0 +1,37 @@
+[gd_resource type="ProjectileConfig" script_class="UserExtendedProjectileConfig" load_steps=7 format=3 uid="uid://ggcm1vwuxqyx"]
+
+[ext_resource type="Shader" path="res://src/example_display/projectile_rect_material.gdshader" id="1_2adx3"]
+[ext_resource type="Script" path="res://src/example_display/projectile_configs/draw_damage_on_target_projectile_config.gd" id="1_ehqnp"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0k2mb"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rar2b"]
+noise = SubResource("FastNoiseLite_0k2mb")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gdgpy"]
+shader = ExtResource("1_2adx3")
+shader_parameter/gradientRemap = Vector4(0.328, -0.958, 0, 0.264)
+shader_parameter/beamRemap = Vector4(0.404, 1.12, 1, 200)
+shader_parameter/color1 = Color(0, 0, 0, 0)
+shader_parameter/color2 = Color(1, 0, 0, 1)
+shader_parameter/scale = Vector3(1, 20, 0)
+shader_parameter/threshold = 0.773
+shader_parameter/offset = 1.5
+shader_parameter/noise = SubResource("NoiseTexture2D_rar2b")
+
+[sub_resource type="ProjectileRectDisplay" id="ProjectileRectDisplay_ngnkv"]
+width = 16.0
+height = 16.0
+material = SubResource("ShaderMaterial_gdgpy")
+
+[resource]
+speed = 300.0
+max_speed = 1200.0
+acceleration = 300.0
+lifetime = 4.0
+collision_mask = 1
+collide_with_bodies = true
+collide_with_areas = true
+display_type = 1
+rect_display = SubResource("ProjectileRectDisplay_ngnkv")
+script = ExtResource("1_ehqnp")

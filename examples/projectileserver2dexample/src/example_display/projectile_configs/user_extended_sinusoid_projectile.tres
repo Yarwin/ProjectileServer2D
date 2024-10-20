@@ -1,0 +1,42 @@
+[gd_resource type="ProjectileConfig" script_class="UserExtendedProjectileConfig" load_steps=8 format=3 uid="uid://doqr5432xbdil"]
+
+[ext_resource type="Shader" path="res://src/example_display/projectile_rect_material.gdshader" id="1_h6d0t"]
+[ext_resource type="Script" path="res://src/example_display/projectile_configs/draw_damage_on_target_projectile_config.gd" id="2_6wnew"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_t5rl4"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_i7nct"]
+noise = SubResource("FastNoiseLite_t5rl4")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vdopl"]
+shader = ExtResource("1_h6d0t")
+shader_parameter/gradientRemap = Vector4(0.328, -0.958, 0, 0.264)
+shader_parameter/beamRemap = Vector4(0.404, 1.12, 1, 200)
+shader_parameter/color1 = Color(0, 0, 0, 0)
+shader_parameter/color2 = Color(1, 0, 0, 1)
+shader_parameter/scale = Vector3(1, 20, 0)
+shader_parameter/threshold = 0.773
+shader_parameter/offset = 1.5
+shader_parameter/noise = SubResource("NoiseTexture2D_i7nct")
+
+[sub_resource type="ProjectileRectDisplay" id="ProjectileRectDisplay_qwx2l"]
+width = 16.0
+height = 16.0
+material = SubResource("ShaderMaterial_vdopl")
+
+[sub_resource type="SinusoidTrajectoryConfig" id="SinusoidTrajectoryConfig_iccw6"]
+modulator = 5.0
+
+[resource]
+speed = 110.0
+max_speed = 600.0
+acceleration = 50.0
+lifetime = 6.0
+trajectory_type = 1
+collision_mask = 1
+collide_with_bodies = true
+collide_with_areas = true
+display_type = 1
+rect_display = SubResource("ProjectileRectDisplay_qwx2l")
+sinusoid_trajectory_config = SubResource("SinusoidTrajectoryConfig_iccw6")
+script = ExtResource("2_6wnew")
