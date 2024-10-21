@@ -1,0 +1,29 @@
+name: Build Windows
+on:
+  workflow_call:
+
+jobs:
+  linux:
+    runs-on: "windows-latest"
+    name: ${{ matrix.arch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [ "x86_64-pc-windows-msvc", "i686-pc-windows-msvc", "aarch64-pc-windows-msvc" ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        uses: ./.github/actions/build
+        with:
+          arch: ${{ matrix.arch }}
+      - name: Copy to bin
+        shell: sh
+        run: |
+          mv projectile_server_2d/target/release/projectile_server_2d.dll bin/addons/projectile_server2d/bin/libprojectile_server_2d.windows.${{ matrix.arch }}.dll
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-projectile-server-2d-${{ matrix.arch}}
+          path: |
+            bin/**/*.dll
+          if-no-files-found: error

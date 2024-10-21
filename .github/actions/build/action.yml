@@ -1,0 +1,32 @@
+name: ProjectileServer2D Build
+description: Build godot-rust and create an addon
+
+inputs:
+  arch:
+    required: true
+    default: ''
+    description: Rust target platform.
+  extra_flags:
+    required: false
+    default: ''
+    description: Rust extra flags.
+
+runs:
+  using: composite
+  steps:
+    - name: Rust Add target
+      shell: sh
+      run: |
+        rustup target add ${{ inputs.arch }}
+    - name: Build
+      shell: sh
+      working-directory: ./projectile_server_2d
+      run: |
+        cargo build --target=${{ inputs.arch }} --release ${{ inputs.extra_flags}}
+    - name: Copy to release
+      shell: sh
+      working-directory: ./projectile_server_2d
+      run: |
+        mkdir -p target/release
+        rm -rf target/release
+        cp -rf target/${{ inputs.arch }}/release target/release

@@ -1,0 +1,25 @@
+name: Static checks
+on:
+  workflow_call:
+
+jobs:
+  format-code:
+    name: Format Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Format
+        working-directory: ./projectile_server_2d
+        shell: sh
+        run: |
+          cargo fmt --all -- --config-path ./rustfmt.toml
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Clippy
+        working-directory: ./projectile_server_2d
+        shell: sh
+        run: |
+          cargo clippy --all-targets --no-default-features -- -D warnings

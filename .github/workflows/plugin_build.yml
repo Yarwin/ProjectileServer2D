@@ -1,0 +1,17 @@
+name: Plugin Build
+on:
+  workflow_call:
+
+jobs:
+  godot:
+    runs-on: "ubuntu-latest"
+    name: "Godot Plugin"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload plugin files
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-projectile-server-2d-gdext
+          path: |
+            bin
+          if-no-files-found: error

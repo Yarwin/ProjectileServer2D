@@ -1,0 +1,29 @@
+name: Build Linux
+on:
+  workflow_call:
+
+jobs:
+  linux:
+    runs-on: ubuntu-20.04
+    name: ${{ matrix.arch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [ "x86_64-unknown-linux-gnu" ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        uses: ./.github/actions/build
+        with:
+          arch: ${{ matrix.arch }}
+      - name: Copy to bin
+        shell: sh
+        run: |
+          mv projectile_server_2d/target/release/libprojectile_server_2d.so bin/addons/projectile_server2d/bin/libprojectile_server_2d.linux.${{ matrix.arch }}.so
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-projectile-server-2d-${{ matrix.arch}}
+          path: |
+            bin/**/*.so
+          if-no-files-found: error

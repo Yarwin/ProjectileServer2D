@@ -1,0 +1,50 @@
+name: Builds
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - "main"
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-checks:
+    name: Static checks
+    uses: ./.github/workflows/static_checks.yml
+
+  linux-build:
+    name: Build Linux
+    uses: ./.github/workflows/linux_build.yml
+
+  plugin-build:
+    name: Build Plugin
+    uses: ./.github/workflows/plugin_build.yml
+#  osx-build:
+#    name: Build Osx
+#    uses: ./github/workflows/osx_build.yml
+#
+  windows-build:
+    name: Build Windows
+    uses: ./.github/workflows/windows_build.yml
+
+  merge:
+    runs-on: ubuntu-latest
+    name: Merge
+#    needs: [linux-build, osx-build, linux-build, windows-build]
+    needs: [linux-build, plugin-build, windows-build]
+    steps:
+      - uses: actions/upload-artifact/merge@v4
+        with:
+          name: godot-projectile-server-2d
+          pattern: godot-projectile-server-2d-*
+
+  release:
+    name: Create Release
+    permissions:
+      contents: write
+    needs: [merge]
+    uses: ./.github/workflows/release.yml
+    if: github.ref == 'refs/heads/main'
