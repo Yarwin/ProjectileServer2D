@@ -3,6 +3,9 @@ Projectile Server 2D
 
 Godot4 Gdextension plugin that allows one to instance thousands of projectiles using Godot's Rendering2DServer and Physics2DServer.
 
+https://github.com/user-attachments/assets/a839f97c-bc00-4152-8e25-517035762237
+
+
 ## Quickstart
 
 
@@ -28,6 +31,10 @@ func _on_projectile_removed(caster: Node2D, projectile_transform: Transform2D) -
 2. Create your ProjectileConfig. Specify Trajectory type, Propagation Mode, Display Type and following required resources along all the other data.
 3. Spawn your projectile!
 ```gdscript
+extends Node2D
+class_name MyCaster
+(…)
+
     var canvas: RID = self.get_world_2d().canvas
     var space: RID = self.get_world_2d().space
     var projectile_transform: Transform2D = self.current_muzzle.get_global_transform()
