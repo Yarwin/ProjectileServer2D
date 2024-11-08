@@ -29,7 +29,7 @@ class_name UserExtendedProjectileConfig
 # Public functions                                                            #
 ###############################################################################
 
-func _on_area_collided(area: Area2D, caster: Node2D, collision_data: Dictionary) -> bool:
+func _on_area_collided(area: Area2D, collision_data: Dictionary, metadata: Variant) -> bool:
 	if area is ExampleTarget:
 		area.draw_damage_label(2.)
 	return true

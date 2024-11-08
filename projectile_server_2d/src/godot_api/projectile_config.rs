@@ -126,6 +126,10 @@ pub(crate) struct ProjectileConfig {
     /// [Shape2D] required for `CastArea` and `RigidBody` Projectile types.
     #[export]
     pub collision_shape: Option<Gd<Shape2D>>,
+    /// Additional length of the Projectile.
+    /// By default, projectiles only check for collisions in their travel path. `Length` allows to extend range of said check
+    #[export]
+    pub length: f32,
     ///
 
     #[var(usage_flags = [GROUP, EDITOR, READ_ONLY])]
@@ -143,6 +147,8 @@ pub(crate) struct ProjectileConfig {
     #[export(range = (0.0, 10.0, or_greater))]
     #[init(val = Vector2::ONE)]
     pub scale: Vector2,
+    #[export]
+    pub offset: Vector2,
     /// Defines how given projectile is being drawn.
     /// **Texture** - draws sprite according to settings in [ProjectileTextureDisplay]. [br]**Rect** - draws white rect according to settings in [ProjectileRectDisplay]
     #[export]
@@ -229,36 +235,36 @@ impl ProjectileConfig {
         }
     }
 
-    /// Called when projectile is being removed.
+    /// Called when projectile is being removed. [br] Contains metadata set by user for given projectile.
     #[func(virtual, gd_self)]
     #[allow(unused_variables)]
     pub fn on_projectile_removed(
         this: Gd<Self>,
-        caster: Option<Gd<Node2D>>,
         projectile_transform: Transform2D,
+        metadata: Variant,
     ) {
     }
     /// Called when the received area collides with this projectile. The method must return a boolean value. `true` removes the projectile, while `false` lets it proceed to the next frame.
-    /// The structure of collision data depends on selected propagation node. [br] For `RayCast` they are identical to [method PhysicsDirectSpaceState2D.intersect_ray], while `CastArea` is identical to [method PhysicsDirectSpaceState2D.intersect_shape].
+    /// The structure of collision data depends on selected propagation node. [br] For `RayCast` they are identical to [method PhysicsDirectSpaceState2D.intersect_ray], while `CastArea` is identical to [method PhysicsDirectSpaceState2D.intersect_shape]. [br] Contains metadata set by user for given projectile.
     #[func(virtual, gd_self)]
     #[allow(unused_variables)]
     pub fn on_area_collided(
         this: Gd<Self>,
         area: Gd<Area2D>,
-        caster: Option<Gd<Node2D>>,
         collision_data: Dictionary,
+        metadata: Variant,
     ) -> bool {
         true
     }
     /// Called when the received body collides with this projectile. `true` removes the projectile, while `false` lets it proceed to the next frame.
-    /// The structure of collision data depends on selected propagation node. [br] For `RayCast` it is identical to [method PhysicsDirectSpaceState2D.intersect_ray], while `CastArea` is identical to [method PhysicsDirectSpaceState2D.intersect_shape].
+    /// The structure of collision data depends on selected propagation node. [br] For `RayCast` it is identical to [method PhysicsDirectSpaceState2D.intersect_ray], while `CastArea` is identical to [method PhysicsDirectSpaceState2D.intersect_shape]. [br] Contains metadata set by user for given projectile.
     #[func(virtual, gd_self)]
     #[allow(unused_variables)]
     pub fn on_body_collided(
         this: Gd<Self>,
         body: Gd<Node2D>,
-        caster: Option<Gd<Node2D>>,
         collision_data: Dictionary,
+        metadata: Variant,
     ) -> bool {
         true
     }

@@ -5,6 +5,7 @@ use godot::classes::RenderingServer;
 use godot::global::sin;
 use godot::prelude::*;
 
+#[derive(Debug)]
 pub(crate) struct Projectile {
     time: f64,
     /// `true` if given bullet is set for removal.
@@ -12,10 +13,10 @@ pub(crate) struct Projectile {
     pub(crate) projectile_config: Gd<ProjectileConfig>,
     pub(crate) canvas: Rid,
     pub(crate) space: Rid,
-    pub(crate) owner: Option<Gd<Node2D>>,
     pub transform: Transform2D,
     pub exclude: Array<Rid>,
     pub rid: Rid,
+    pub metadata: Variant,
 }
 
 impl Projectile {
@@ -25,7 +26,7 @@ impl Projectile {
         space: Rid,
         transform2d: Transform2D,
         exclude: Array<Rid>,
-        owner: Option<Gd<Node2D>>,
+        metadata: Variant,
     ) -> Self {
         let rid = RenderingServer::singleton().canvas_item_create();
         let transform = transform2d.scaled_local(projectile_config.bind().scale);
@@ -36,10 +37,10 @@ impl Projectile {
             projectile_config,
             canvas,
             space,
-            owner,
             transform,
             exclude,
             rid,
+            metadata,
         }
     }
 

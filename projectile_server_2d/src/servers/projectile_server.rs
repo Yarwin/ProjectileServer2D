@@ -1,13 +1,13 @@
-use crate::constants::CONNECT_ONE_SHOT;
 use crate::godot_api::projectile_config::{ProjectileConfig, PropagationType};
 use crate::servers::projectile::Projectile;
 use godot::classes::{
-    Area2D, PhysicsRayQueryParameters2D, PhysicsServer2D, PhysicsShapeQueryParameters2D,
+    Area2D, Engine, PhysicsRayQueryParameters2D, PhysicsServer2D, PhysicsShapeQueryParameters2D,
     RenderingServer,
 };
 use godot::prelude::*;
 use std::collections::{HashMap, VecDeque};
 
+#[derive(Debug)]
 #[allow(dead_code)]
 enum LiveProjectile {
     CastArea(Projectile),
@@ -36,7 +36,9 @@ impl LiveProjectile {
         let Some(mut space_state) =
             PhysicsServer2D::singleton().space_get_direct_state(projectile.space)
         else {
+            // space direct state is inaccessible – probably has been removed.
             godot_error!("couldn't access Projectile Space State!");
+            projectile.remove();
             return;
         };
         projectile.increment_time(delta);
@@ -68,6 +70,7 @@ impl LiveProjectile {
         let Some(mut space_state) =
             PhysicsServer2D::singleton().space_get_direct_state(projectile.space)
         else {
+            projectile.remove();
             godot_error!("couldn't access Projectile Space State!");
             return;
         };
@@ -96,7 +99,6 @@ impl LiveProjectile {
 
     fn resolve_collision(projectile: &mut Projectile, collision_info: Dictionary) {
         let projectile_config = projectile.projectile_config.clone();
-        let caster = projectile.owner.clone();
         if let Some(Ok(area)) = collision_info
             .get("collider")
             .map(|v| v.try_to::<Gd<Area2D>>())
@@ -105,8 +107,8 @@ impl LiveProjectile {
             let should_be_removed = ProjectileConfig::on_area_collided(
                 projectile_config,
                 area,
-                caster,
                 collision_info.clone(),
+                projectile.metadata.clone(),
             );
             projectile.is_queued_for_removal = should_be_removed;
         } else if let Some(Ok(body)) = collision_info
@@ -116,8 +118,8 @@ impl LiveProjectile {
             let should_be_removed = ProjectileConfig::on_body_collided(
                 projectile_config,
                 body,
-                caster,
                 collision_info.clone(),
+                projectile.metadata.clone(),
             );
             projectile.is_queued_for_removal = should_be_removed;
         }
@@ -138,8 +140,8 @@ impl LiveProjectile {
             projectile.remove();
             ProjectileConfig::on_projectile_removed(
                 projectile.projectile_config.clone(),
-                projectile.owner.clone(),
                 projectile.transform,
+                projectile.metadata.clone(),
             );
         }
     }
@@ -189,6 +191,14 @@ pub struct ProjectileManager2D {
 
 #[godot_api]
 impl INode for ProjectileManager2D {
+    fn enter_tree(&mut self) {
+        Engine::singleton().register_singleton(&Self::singleton_name(), self.base().clone());
+    }
+
+    fn exit_tree(&mut self) {
+        Engine::singleton().unregister_singleton(&Self::singleton_name());
+    }
+
     fn physics_process(&mut self, delta: f64) {
         let mut projectiles = std::mem::take(&mut self.projectiles);
         let mut new_projectiles = std::mem::take(&mut self.new_projectiles);
@@ -203,6 +213,9 @@ impl INode for ProjectileManager2D {
         }
 
         for (idx, (_rid, projectile)) in projectiles.iter_mut().enumerate() {
+            if projectile.projectile().is_queued_for_removal {
+                continue;
+            }
             projectile.update(delta, idx);
         }
         projectiles.retain(|_r, p| !p.projectile().is_queued_for_removal);
@@ -212,6 +225,20 @@ impl INode for ProjectileManager2D {
 
 #[godot_api]
 impl ProjectileManager2D {
+    /// Removes all the active projectiles.
+    #[func]
+    fn stop_simulation(&mut self) {
+        let mut new_projectiles = std::mem::take(&mut self.new_projectiles);
+        for mut projectile in new_projectiles.drain(..) {
+            projectile.remove();
+        }
+        let mut projectiles = std::mem::take(&mut self.projectiles);
+        for (_rid, mut projectile) in projectiles.drain() {
+            projectile.projectile_mut().remove();
+        }
+        self.projectiles = projectiles;
+    }
+
     /// Spawns new projectile in given World2D's `canvas` and physics `space` at position declared in `transform2d.origin`. Returns [RID] of created projectile.
     #[func]
     fn spawn_new_projectile(
@@ -221,7 +248,7 @@ impl ProjectileManager2D {
         space: Rid,
         transform2d: Transform2D,
         exclude: Array<Rid>,
-        mut caster: Option<Gd<Node2D>>,
+        metadata: Variant,
     ) -> Rid {
         let projectile = Projectile::new(
             projectile_config,
@@ -229,35 +256,18 @@ impl ProjectileManager2D {
             space,
             transform2d,
             exclude,
-            caster.clone(),
+            metadata,
         );
-        if let Some(caster) = caster.as_mut() {
-            let args = varray![self.to_gd(), projectile.rid];
-            let internal_callable =
-                Callable::from_fn("on_bullet_owner_removed", |args: &[&Variant]| {
-                    let Some(mut this) = args.first().map(|v| v.to::<Gd<ProjectileManager2D>>())
-                    else {
-                        return Err(());
-                    };
-                    let mut this_bind = this.bind_mut();
-                    let Some(projectile_rid) = args.get(1).map(|v| v.to::<Rid>()) else {
-                        return Err(());
-                    };
-                    let Some(projectile) = this_bind.projectiles.get_mut(&projectile_rid) else {
-                        return Err(());
-                    };
-                    projectile.projectile_mut().owner = None;
-                    Ok(Variant::nil())
-                })
-                .bindv(&args);
-            let tree_exiting = StringName::from("tree_exiting");
-            caster
-                .connect_ex(tree_exiting, internal_callable)
-                .flags(CONNECT_ONE_SHOT)
-                .done();
-        }
         let projectile_rid = projectile.rid;
         self.new_projectiles.push_front(projectile);
         projectile_rid
+    }
+}
+
+impl ProjectileManager2D {
+    const NAME: &'static str = "ProjectileServer2D";
+
+    fn singleton_name() -> StringName {
+        StringName::from(Self::NAME)
     }
 }
