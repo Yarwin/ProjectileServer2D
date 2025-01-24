@@ -131,7 +131,6 @@ pub(crate) struct ProjectileConfig {
     #[export]
     pub length: f32,
     ///
-
     #[var(usage_flags = [GROUP, EDITOR, READ_ONLY])]
     display: u32,
     /// Enables physics interpolation for given projectile. See [member ProjectSettings.physics/common/physics_interpolation] and [member SceneTree.physics_interpolation] for the global setting.

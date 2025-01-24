@@ -16,15 +16,15 @@ extends ProjectileConfig
 class_name UserExtendedProjectileConfig
 
 
-func _on_area_collided(area: Area2D, caster: Node2D, collision_data: Dictionary) -> bool:
+func _on_area_collided(area: Area2D, collision_data: Dictionary, metadata: Variant) -> bool:
 	print("Hello Area!")
 
 
-func _on_body_collided(area: Area2D, caster: Node2D, collision_data: Dictionary) -> bool:
+func _on_body_collided(body: Body2D, collision_data: Dictionary, metadata: Variant) -> bool:
 	print("Hello body!")
 
 
-func _on_projectile_removed(caster: Node2D, projectile_transform: Transform2D) -> bool:
+func _on_projectile_removed(collision_data: Dictionary, metadata: Variant) -> bool:
 	print("Goodbay cruel world!")
 ```
 
@@ -46,7 +46,6 @@ class_name MyCaster
         space, # World2D physics space
         projectile_transform, 
         exclude,
-        self # (optional) caster (used only in callbacks).
+        self # Metadata attached to given projectile that can be used in callbacks.
     )
 ```
-

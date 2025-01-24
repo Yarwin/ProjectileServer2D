@@ -7,6 +7,9 @@
 *.pdb
 *.so
 
+# cargo
+*.lock
+
 # System/tool-specific ignores
 .directory
 .DS_Store

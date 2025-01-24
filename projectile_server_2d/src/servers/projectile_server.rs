@@ -58,7 +58,7 @@ impl LiveProjectile {
             params.set_collision_mask(projectile_config.collision_mask);
             params.set_collide_with_areas(projectile_config.collide_with_areas);
             params.set_collide_with_bodies(projectile_config.collide_with_bodies);
-            space_state.intersect_shape(params)
+            space_state.intersect_shape(&params)
         };
         for collision in collisions.iter_shared() {
             Self::resolve_collision(projectile, collision);
@@ -88,7 +88,7 @@ impl LiveProjectile {
             params.set_collide_with_areas(projectile_config_bind.collide_with_areas);
             params.set_collide_with_bodies(projectile_config_bind.collide_with_bodies);
             params.set_exclude(&projectile.exclude);
-            space_state.intersect_ray(params)
+            space_state.intersect_ray(&params)
         };
         projectile.update(delta);
         if !cast.is_empty() {
@@ -192,7 +192,7 @@ pub struct ProjectileManager2D {
 #[godot_api]
 impl INode for ProjectileManager2D {
     fn enter_tree(&mut self) {
-        Engine::singleton().register_singleton(&Self::singleton_name(), self.base().clone());
+        Engine::singleton().register_singleton(&Self::singleton_name(), &self.base().clone());
     }
 
     fn exit_tree(&mut self) {
